@@ -1,6 +1,4 @@
-// src/components/Register.js
-
-import React, { useState } from "react";
+import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,7 +21,7 @@ const Register = () => {
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/login"); // Redirect to login page after successful registration
+      navigate("/login");
     } catch (error) {
       setError(error.message);
     }

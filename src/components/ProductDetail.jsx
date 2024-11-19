@@ -1,10 +1,7 @@
-// src/components/ProductDetail.js
-
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
-import { auth } from "../firebase/firebaseConfig";
 import "../styles/ProductDetail.css";
 
 const ProductDetail = ({ user }) => {
@@ -42,7 +39,6 @@ const ProductDetail = ({ user }) => {
     fetchSandwich();
   }, [productId]);
 
-  // Handle the update of the sandwich details
   const handleUpdate = async () => {
     try {
       const docRef = doc(db, "sandwiches", productId);
@@ -59,23 +55,20 @@ const ProductDetail = ({ user }) => {
     }
   };
 
-  // Handle the deletion of the sandwich
   const handleDelete = async () => {
     try {
       const docRef = doc(db, "sandwiches", productId);
       await deleteDoc(docRef);
-      navigate("/"); // Redirect to home after deleting
+      navigate("/");
     } catch (err) {
       setError("Failed to delete sandwich.");
     }
   };
 
-  // Handle "add to cart" action
   const handleAddToCart = () => {
     setCartPopup(true);
   };
 
-  // Close cart popup
   const closePopup = () => {
     setCartPopup(false);
   };

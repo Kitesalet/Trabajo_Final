@@ -1,6 +1,4 @@
-// src/components/Login.js
-
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
@@ -17,7 +15,7 @@ const Login = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/"); // Redirect to Home page after successful login
+      navigate("/");
     } catch (error) {
       setError(error.message);
     }

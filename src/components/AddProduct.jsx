@@ -1,6 +1,4 @@
-// src/components/AddProduct.js
-
-import React, { useState } from "react";
+import { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";

@@ -1,6 +1,4 @@
-// src/App.js
-
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebaseConfig";
@@ -15,7 +13,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 function App() {
   const [user, setUser] = useState(null);
 
-  // Set up the user authentication state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);

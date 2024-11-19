@@ -11,7 +11,6 @@ const Home = ({ user }) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Fetch sandwiches from Firestore
   useEffect(() => {
     const fetchSandwiches = async () => {
       try {
