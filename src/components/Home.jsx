@@ -1,10 +1,9 @@
-// src/components/Home.js
-
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
+import SandwichCard from "./SandwichCard";
 
 const Home = ({ user }) => {
   const [sandwiches, setSandwiches] = useState([]);
@@ -33,42 +32,28 @@ const Home = ({ user }) => {
 
   const handleAddNew = () => {
     if (!user) {
-      alert("You need to be logged in to add a new sandwich.");
+      alert("Tenes que estar logueado para agregar un sandwich!");
       return;
     }
     navigate("/addProduct");
   };
 
   return (
-    <div className="home-container container mt-3">
-      <h2>Welcome to Our Sandwicheria</h2>
-
+    <div className="home-container mt-3">
+      <h1>Bienvenido a la sandwichería!</h1>
       {user && (
-        <button className="add-sandwich-btn" onClick={handleAddNew}>
-          Add New Sandwich
+        <button className="btn btn-success my-3" onClick={handleAddNew}>
+          Agregar un sandwich
         </button>
       )}
 
       <div className="sandwich-list">
         {sandwiches.length > 0 ? (
           sandwiches.map((sandwich) => (
-            <div key={sandwich.id} className="sandwich-item">
-              <h3>{sandwich.name}</h3>
-              <p>{sandwich.description}</p>
-              <p>Price: ${sandwich.price}</p>
-              <p>
-                <strong>SKU: {sandwich.sku}</strong>
-              </p>
-              <button
-                className="btn"
-                onClick={() => navigate(`/product/${sandwich.id}`)}
-              >
-                View Details
-              </button>
-            </div>
+            <SandwichCard sandwich={sandwich} key={sandwich.id}></SandwichCard>
           ))
         ) : (
-          <h4>No sandwiches available...</h4>
+          <h4>No hay sandwiches disponibles...</h4>
         )}
       </div>
     </div>

@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebaseConfig";
 import Home from "./components/Home";
@@ -9,9 +15,12 @@ import Login from "./components/Login";
 import "./styles/App.css";
 import AddProduct from "./components/AddProduct";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from "./components/Navbar";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -21,54 +30,42 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  const handleAddToCart = () => {
+    setCartCount(cartCount + 1);
+  };
+
+  const handleCartClick = () => {
+    if (cartCount > 0) {
+      setShowModal(true);
+      setCartCount(0);
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <Router>
       <div className="App">
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <div className="container-fluid">
-            <Link className="navbar-brand" to="/">
-              Sandwichería El Jeringa
-            </Link>
-            <div className="" id="navbarNav">
-              <ul className="navbar-nav ms-auto">
-                {user ? (
-                  <>
-                    <li className="nav-item px-3">
-                      <span className="navbar-text">Welcome, {user.email}</span>
-                    </li>
-                    <li className="nav-item">
-                      <button
-                        className="btn btn-outline-danger"
-                        onClick={() => auth.signOut()}
-                      >
-                        Logout
-                      </button>
-                    </li>
-                  </>
-                ) : (
-                  <>
-                    <li className="nav-item">
-                      <Link className="nav-link" to="/login">
-                        Login
-                      </Link>
-                    </li>
-                    <li className="nav-item">
-                      <Link className="nav-link" to="/register">
-                        Register
-                      </Link>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </div>
-          </div>
-        </nav>
+        <Navbar
+          user={user}
+          cartCount={cartCount}
+          setCartCount={setCartCount}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          handleAddToCart={handleAddToCart}
+          closeModal={closeModal}
+          handleCartClick={handleCartClick}
+        />
 
         <Routes>
           <Route path="/" element={<Home user={user} />} />
           <Route
             path="/product/:productId"
-            element={<ProductDetail user={user} />}
+            element={
+              <ProductDetail user={user} handleAddToCarter={handleAddToCart} />
+            }
           />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />

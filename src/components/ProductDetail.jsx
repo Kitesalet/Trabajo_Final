@@ -4,7 +4,7 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import "../styles/ProductDetail.css";
 
-const ProductDetail = ({ user }) => {
+const ProductDetail = ({ user, handleAddToCarter }) => {
   const { productId } = useParams();
   const navigate = useNavigate();
   const [sandwich, setSandwich] = useState(null);
@@ -15,6 +15,7 @@ const ProductDetail = ({ user }) => {
   const [newPrice, setNewPrice] = useState("");
   const [newSku, setNewSku] = useState("");
   const [error, setError] = useState("");
+  const [loading, isLoading] = useState(false);
 
   useEffect(() => {
     const fetchSandwich = async () => {
@@ -40,6 +41,7 @@ const ProductDetail = ({ user }) => {
   }, [productId]);
 
   const handleUpdate = async () => {
+    isLoading(true);
     try {
       const docRef = doc(db, "sandwiches", productId);
       await updateDoc(docRef, {
@@ -48,24 +50,29 @@ const ProductDetail = ({ user }) => {
         sku: newSku,
         price: parseFloat(newPrice),
       });
-      setIsEditMode(false); // Exit edit mode after updating
+      setIsEditMode(false);
       navigate("/");
     } catch (err) {
-      setError("Failed to update sandwich.");
+      setError("Fallo en actualización de sandwich.");
     }
+
+    isLoading(false);
   };
 
   const handleDelete = async () => {
+    isLoading(true);
     try {
       const docRef = doc(db, "sandwiches", productId);
       await deleteDoc(docRef);
       navigate("/");
     } catch (err) {
-      setError("Failed to delete sandwich.");
+      setError("Fallo en eliminación de sandwich");
     }
+    isLoading(false);
   };
 
   const handleAddToCart = () => {
+    handleAddToCarter();
     setCartPopup(true);
   };
 
@@ -76,19 +83,24 @@ const ProductDetail = ({ user }) => {
   if (!sandwich)
     return (
       <div className="spinner-grow" role="status">
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Cargando...</span>
       </div>
     );
 
   return (
-    <div className="product-detail-container container mt-3">
+    <div
+      className="card container my-3 py-2"
+      style={{ width: "40rem", height: "100%" }}
+    >
       <h2>{sandwich.name}</h2>
-      <p>{sandwich.description}</p>
-      <p>Price: ${sandwich.price}</p>
+      <img
+        className="card-img-top"
+        src="https://s3.abcstatics.com/abc/sevilla/media/gurme/2023/05/23/s/sandwich-club1-kqJF--1248x698@abc.jpg"
+      ></img>{" "}
+      <p className="fw-bold">{sandwich.description}</p>
+      <p>Precio: ${sandwich.price}</p>
       <p>SKU: ${sandwich.sku}</p>
-
       {error && <p className="error-message">{error}</p>}
-
       {user && (
         <>
           {!isEditMode ? (
@@ -97,10 +109,17 @@ const ProductDetail = ({ user }) => {
                 className="btn btn-success col-6 mb-2"
                 onClick={() => setIsEditMode(true)}
               >
-                Edit
+                Editar
               </button>
+
               <button className="btn btn-danger col-6" onClick={handleDelete}>
-                Delete
+                {!loading ? (
+                  <p className="mb-0 text-light">Eliminar</p>
+                ) : (
+                  <div class="spinner-grow" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                )}
               </button>
             </>
           ) : (
@@ -133,31 +152,37 @@ const ProductDetail = ({ user }) => {
                 className="btn btn-success col-6 mb-2"
                 onClick={handleUpdate}
               >
-                Save
+                {!loading ? (
+                  <p className="mb-0">Editar</p>
+                ) : (
+                  <div class="spinner-grow" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                )}
               </button>
-              <button
-                className="btn btn-danger col-6"
-                onClick={() => setIsEditMode(false)}
-              >
-                Cancel
-              </button>
+              <div className="mb-2">
+                <button
+                  className="btn btn-danger col-6"
+                  onClick={() => setIsEditMode(false)}
+                >
+                  Cancelar
+                </button>
+              </div>
             </>
           )}
         </>
       )}
-
       {!user && (
         <button className="btn btn-success" onClick={handleAddToCart}>
-          Buy
+          Comprar
         </button>
       )}
-
       {cartPopup && (
         <div className="cart-popup">
           <div className="popup-content">
-            <h3>Item added to your cart!</h3>
+            <h3>Objeto añadido al carrito!</h3>
             <button className="btn btn-primary" onClick={closePopup}>
-              Close
+              Cerrar
             </button>
           </div>
         </div>

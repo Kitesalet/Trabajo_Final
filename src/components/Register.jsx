@@ -15,7 +15,7 @@ const Register = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError("Los passwords no son iguales!");
       return;
     }
 
@@ -29,7 +29,7 @@ const Register = () => {
 
   return (
     <div className="register-container">
-      <h2>Register</h2>
+      <h2>Registrarse</h2>
       <form onSubmit={handleRegister}>
         <div className="form-group">
           <label>Email</label>
@@ -54,7 +54,7 @@ const Register = () => {
         </div>
 
         <div className="form-group">
-          <label>Confirm Password</label>
+          <label>Confirmar Password</label>
           <input
             type="password"
             value={confirmPassword}
@@ -66,12 +66,12 @@ const Register = () => {
 
         {error && <p className="error-message">{error}</p>}
 
-        <button type="submit">Register</button>
+        <button type="submit">Registrarse</button>
       </form>
 
       <div className="login-link">
         <p>
-          Already have an account? <Link to={"/login"}>Login here</Link>
+          Ya tenés una cuenta? <Link to={"/login"}>Logueate acá</Link>
         </p>
       </div>
     </div>

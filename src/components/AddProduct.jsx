@@ -11,9 +11,12 @@ const AddProduct = ({ user }) => {
   const [price, setPrice] = useState("");
   const [sku, setSku] = useState("");
   const [error, setError] = useState("");
+  const [loading, isLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    isLoading(true);
 
     if (name && description && price && sku) {
       try {
@@ -29,19 +32,20 @@ const AddProduct = ({ user }) => {
         setError(error.message);
       }
     } else {
-      setError("All fields are required");
+      setError("Todos los campos son requeridos!");
     }
+    isLoading(false);
   };
 
   if (!user) {
-    return <div>You need to be logged in to add a product</div>;
+    return <div>Tenes que estar logueado para agregar un producto!</div>;
   }
 
   return (
     <div className="add-product-container container mt-3">
-      <h1>Add New Sandwich</h1>
+      <h1>Agregar Nuevo Sandwich</h1>
       <form onSubmit={handleSubmit}>
-        <label>Name</label>
+        <label>Nombre</label>
         <input
           className="mb-1"
           type="text"
@@ -49,7 +53,7 @@ const AddProduct = ({ user }) => {
           onChange={(e) => setName(e.target.value)}
         />
 
-        <label>Description</label>
+        <label>Descripción</label>
         <input
           className="mb-1"
           type="text"
@@ -64,7 +68,7 @@ const AddProduct = ({ user }) => {
           value={sku}
           onChange={(e) => setSku(e.target.value)}
         />
-        <label>Price</label>
+        <label>Precio</label>
         <input
           className="mb-4"
           type="number"
@@ -75,7 +79,13 @@ const AddProduct = ({ user }) => {
         {error && <p className="error-message">{error}</p>}
 
         <button className="btn btn-success col-6" type="submit">
-          Add Sandwich
+          {!loading ? (
+            <p className="mb-0">Agregar Sandwich</p>
+          ) : (
+            <div class="spinner-grow" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          )}
         </button>
       </form>
     </div>
